@@ -19,7 +19,7 @@ services:
       - "5435:5432"
       #volumes: монтируем локальный каталог ./pgdata внутрь контейнера для сохранения данных PostgreSQL.
     volumes:
-      - ./pgdata:/var/lib/postgresql/data/pgdata
+      - ./pgdata:/var/lib/sql/data/pgdata
     #deploy: определяет ресурсы и стратегию развертывания для Docker Swarm (необязательно для стандартного использования Docker Compose).
     # deploy:
     #   resources:
