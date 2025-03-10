@@ -1,54 +1,15 @@
 version: '3.9'
 
 services:
-  postgres:
-  # image: используемая Docker-образ PostgreSQL, в данном случае postgres:latest
+  db:
     image: postgres:latest
-    #container_name: имя контейнера, в котором будет запущен PostgreSQL.
-    container_name: postgres_container
-    #environment: переменные окружения для настройки PostgreSQL 
-    # (пользователь, пароль, имя базы данных)
+    container_name: postgres_db
+    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: qwerty321
       POSTGRES_DB: practice
-      PGDATA: /var/lib/postgresql/data/pgdata
-      #ports: проброс портов, где "5435:5432" означает, что порт PostgreSQL внутри контейнера (5432) проброшен на порт хоста (5430). 
-      # Это значит что для подключения к постгрес нужно будет прописывать порт 5435
     ports:
       - "5435:5432"
-      #volumes: монтируем локальный каталог ./pgdata внутрь контейнера для сохранения данных PostgreSQL.
     volumes:
-      - ./pgdata:/var/lib/sql/data/pgdata
-    #deploy: определяет ресурсы и стратегию развертывания для Docker Swarm (необязательно для стандартного использования Docker Compose).
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '0.50'
-    #       memory: 512M
-    #     reservations:
-    #       cpus: '0.25'
-    #       memory: 256M
-    #command: дополнительные параметры командной строки PostgreSQL для настройки параметров производительности.
-    command: >
-      postgres -c max_connections=1000
-               -c shared_buffers=256MB
-               -c effective_cache_size=768MB
-               -c maintenance_work_mem=64MB
-               -c checkpoint_completion_target=0.7
-               -c wal_buffers=16MB
-               -c default_statistics_target=100
-    #healthcheck: проверка состояния PostgreSQL с использованием pg_isready.
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U user -d practice" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    #restart, tty, stdin_open: настройки перезапуска контейнера и взаимодействия с ним через терминал.  
-    restart: always
-    tty: true
-    stdin_open: true
-#Определяет том pgdata, который используется для постоянного хранения данных PostgreSQL
-volumes:
-  pgdata:
-    driver: local
+      - ./pg_data:/var/lib/postgresql/data
